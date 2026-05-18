@@ -56,11 +56,11 @@ export async function runReviewer(
     .map(
       (v, i) =>
         `--- Variant ${i + 1} (${v.platform}, ${tasks[i]?.content_type}) ---
-GEO keywords required: ${tasks[i]?.geo_keywords.join(", ") ?? "(none)"}
+GEO keywords required: ${(tasks[i]?.geo_keywords ?? []).join(", ") || "(none)"}
 HOOK: ${v.hook}
 BODY: ${v.body}
 CTA: ${v.cta}
-HASHTAGS: ${v.hashtags.join(", ")}`
+HASHTAGS: ${(v.hashtags ?? []).join(", ")}`
     )
     .join("\n\n");
 

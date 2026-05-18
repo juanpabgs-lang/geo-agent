@@ -61,15 +61,34 @@ export async function POST(req: NextRequest) {
               agent: `executor[${idx}]`,
               message: `Generating ${task.content_type} for ${task.platform}`,
             });
-            let variant: ExecutedVariant;
-            if (config.mode === "demo") {
-              await wait(700 + idx * 250);
-              variant = demoVariant(task, topic);
-            } else {
-              variant = await runExecutor(config, topic, task);
+            try {
+              let variant: ExecutedVariant;
+              if (config.mode === "demo") {
+                await wait(700 + idx * 250);
+                variant = demoVariant(task, topic);
+              } else {
+                variant = await runExecutor(config, topic, task);
+              }
+              variants[idx] = variant;
+              send({ type: "executor_done", idx, variant });
+            } catch (err) {
+              const msg = err instanceof Error ? err.message : String(err);
+              send({
+                type: "log",
+                agent: `executor[${idx}]`,
+                message: `failed: ${msg} — substituting placeholder variant`,
+              });
+              const fallback: ExecutedVariant = {
+                platform: task.platform,
+                content_type: task.content_type,
+                hook: `(executor failed for ${task.platform})`,
+                body: `Executor encountered an error: ${msg}. The orchestrator continues with the remaining variants.`,
+                cta: "",
+                hashtags: [],
+              };
+              variants[idx] = fallback;
+              send({ type: "executor_done", idx, variant: fallback });
             }
-            variants[idx] = variant;
-            send({ type: "executor_done", idx, variant });
           })
         );
 

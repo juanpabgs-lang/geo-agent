@@ -39,7 +39,7 @@ Your task:
 - Content type: ${task.content_type}
 - Angle: ${task.angle}
 - Target audience: ${task.target_audience}
-- GEO keywords to weave in: ${task.geo_keywords.join(", ")}
+- GEO keywords to weave in: ${(task.geo_keywords ?? []).join(", ") || "(none provided — invent 3–5 specific entities)"}
 
 Produce the variant as JSON now.`,
     },

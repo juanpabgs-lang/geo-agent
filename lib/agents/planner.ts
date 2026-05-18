@@ -72,5 +72,13 @@ function normalizeTask(t: PlannerTask): PlannerTask {
     const match = ALLOWED_PLATFORMS.find((p) => p === raw);
     if (match) platform = match;
   }
-  return { ...t, platform };
+  return {
+    platform,
+    content_type: t.content_type ?? "thought-leadership-post",
+    angle: String(t.angle ?? "").trim() || "(no angle provided)",
+    target_audience: String(t.target_audience ?? "").trim() || "general technical audience",
+    geo_keywords: Array.isArray(t.geo_keywords)
+      ? t.geo_keywords.map((k) => String(k)).filter(Boolean)
+      : [],
+  };
 }
