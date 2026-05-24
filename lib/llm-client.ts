@@ -1,7 +1,21 @@
 import type { LLMConfig } from "./types";
 
 export function getLLMConfig(): LLMConfig {
+  // Explicit opt-in
   if (process.env.DEMO_MODE === "true") {
+    return { mode: "demo" };
+  }
+  // Explicit opt-out (lets us force real LLM in CI or remote runtimes)
+  const forceLive = process.env.FORCE_LIVE_LLM === "true";
+  // Default behavior: any non-local serverless runtime (Vercel, AWS, etc.) can't
+  // reach the Mac Mini's Ollama, so fall back to demo unless explicitly overridden.
+  const onServerlessHost = Boolean(
+    process.env.VERCEL ||
+      process.env.VERCEL_ENV ||
+      process.env.AWS_LAMBDA_FUNCTION_NAME ||
+      process.env.NETLIFY
+  );
+  if (onServerlessHost && !forceLive) {
     return { mode: "demo" };
   }
   return {
