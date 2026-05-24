@@ -4,6 +4,9 @@
 > Planner → parallel Executors → Reviewer, with an OpenAI-compatible LLM client
 > that runs locally on Ollama and is ready to swap to MiMo-V2.5 / V2.5-Pro.
 
+🔗 **Live demo:** <https://geo-agent-ten.vercel.app> (runs in `DEMO_MODE` — same UI, mocked LLM responses, since Vercel can't reach the Mac Mini's local Ollama)
+🔗 **Repo:** <https://github.com/juanpabgs-lang/geo-agent>
+
 ---
 
 ## Project description
